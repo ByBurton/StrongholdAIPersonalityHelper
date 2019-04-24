@@ -253,9 +253,11 @@ namespace UCP.AICharacters
         public int DefSiegeEngineBuildDelay;
 
         // Index: 72 Hex: 0x120
+        //[RWNames("Unknown072")]
         public int Unknown072;
 
         // Index: 73 Hex: 0x124
+        //[RWNames("Unknown073")]
         public int Unknown073;
 
         // Index: 74 Hex: 0x128
@@ -320,13 +322,19 @@ namespace UCP.AICharacters
         public int RecruitIntervalStrong;
 
         // Index: 92 Hex: 0x170
+        [RWNames("Unknown092")]
+        [RWComment("The total count of all defensive units (wall defense + patrols).")]
         public int DefTotal;
 
         // Index: 93 Hex: 0x174
-        public int Unknown093;
+        [RWNames("Unknown093")]
+        [RWComment("The # of groups the patrols defending the outer economy split into.")]
+        public int OuterPatrolGroupsCount;
 
         // Index: 94 Hex: 0x178
-        public int Unknown094;
+        [RWNames("Unknown094")]
+        [RWComment("Should be 0 or 1. 0 means they will be dumped to one place (quarry), while 1 makes the AI move them around.")]
+        public int OuterPatrolGroupsMove;
 
         // Index: 95 Hex: 0x17C
         public int Unknown095;
@@ -391,32 +399,41 @@ namespace UCP.AICharacters
         public Unit RaidUnit8;
 
         // Index: 115 Hex: 0x1CC
-        public int Unknown115;
+        [RWNames("Unknown115")]
+        public HarassingSiegeEngine HarassingSiegeEngine1;
 
         // Index: 116 Hex: 0x1D0
-        public int Unknown116;
+        [RWNames("Unknown116")]
+        public HarassingSiegeEngine HarassingSiegeEngine2;
 
         // Index: 117 Hex: 0x1D4
-        public int Unknown117;
+        [RWNames("Unknown117")]
+        public HarassingSiegeEngine HarassingSiegeEngine3;
 
         // Index: 118 Hex: 0x1D8
-        public int Unknown118;
+        [RWNames("Unknown118")]
+        public HarassingSiegeEngine HarassingSiegeEngine4;
 
         // Index: 119 Hex: 0x1DC
-        public int Unknown119;
+        [RWNames("Unknown119")]
+        public HarassingSiegeEngine HarassingSiegeEngine5;
 
         // Index: 120 Hex: 0x1E0
-        public int Unknown120;
+        [RWNames("Unknown120")]
+        public HarassingSiegeEngine HarassingSiegeEngine6;
 
         // Index: 121 Hex: 0x1E4
-        public int Unknown121;
+        [RWNames("Unknown121")]
+        public HarassingSiegeEngine HarassingSiegeEngine7;
 
         // Index: 122 Hex: 0x1E8
-        public int Unknown122;
+        [RWNames("Unknown122")]
+        public HarassingSiegeEngine HarassingSiegeEngine8;
 
         // Index: 123 Hex: 0x1EC
         [RWNames("Unknown123")]
-        public int RaidCatapultsMax;
+        [RWComment("The maximum of harassing siege engines an AI builds.")]
+        public int HarassingSiegeEnginesMax;
 
         // Index: 124 Hex: 0x1F0
         public int Unknown124;
@@ -503,14 +520,18 @@ namespace UCP.AICharacters
         public int AttMaxTunnelers;
 
         // Index: 151 Hex: 0x25C
-        [RWComment("Ranged attack unit that moves towards the enemy keep and shoots")]
-        public Unit AttUnitRangedPush;
+        [RWNames("Unknown151")]
+        [RWComment("Ranged attack unit that patrols around the enemy castle / keep. Preferably ranged units should be used here.")]
+        public Unit AttUnitPatrol;
 
         // Index: 152 Hex: 0x260
-        public int AttUnitRangedPushMax;
+        [RWNames("Unknown152")]
+        public int AttUnitPatrolMax;
 
         // Index: 153 Hex: 0x264
-        public int Unknown153;
+        [RWNames("Unknown153")]
+        [RWComment("# of groups the AttUnitPatrol split into. BUGGY! More than 1 group results to only a single group attacking, the others standing idle.")]
+        public int AttUnitPatrolGroupsCount;
 
         // Index: 154 Hex: 0x268
         [RWComment("Attacking unit that holds position and doesn't attack until the walls are breached.")]
@@ -520,13 +541,18 @@ namespace UCP.AICharacters
         public int AttUnitBackupMax;
 
         // Index: 156 Hex: 0x270
-        public int Unknown156;
+        [RWNames("Unknown156")]
+        [RWComment("# of groups the RangedBackupUnits split into. If shields are present in the army, one will be added to each group (if possible).")]
+        public int RangedBackupGroupsCount;
 
         // Index: 157 Hex: 0x274
-        public Unit AttUnit5;
+        [RWNames("Unknown157")]
+        [RWComment("Units that engage enemy groups of units outside the castle. Prioritizes larger groups no matter where they are on the map.")]
+        public Unit AttUnitEngage;
 
         // Index: 158 Hex: 0x278
-        public int AttUnit5Max;
+        [RWNames("Unknown158")]
+        public int AttUnitEngageMax;
 
         // Index: 159 Hex: 0x27C
         [RWComment("These units patrol between siege enginees in order to protect them.")]
