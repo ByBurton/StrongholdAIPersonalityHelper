@@ -182,7 +182,9 @@ namespace UCP.AICharacters
         public int MaxResourceVariance;
 
         // Index: 49 Hex: 0xC4
-        public int Unknown049;
+        [RWNames("Unknown049")]
+        [RWComment("A (gold) threshold which disables any recruitment of all units except for raiding and sortie until it is met.")]
+        public int AttForceRecruitThreshold;
 
         // Index: 50 Hex: 0xC8
         public BlacksmithSetting BlacksmithSetting;
@@ -337,6 +339,9 @@ namespace UCP.AICharacters
         public int OuterPatrolGroupsMove;
 
         // Index: 95 Hex: 0x17C
+        //[RWNames("Unknown095")]
+        //[RWComment("The amount of patrol units the AI saves up before sending them out to do their duty.")]
+        //NOT SURE HERE YET, NEEDS TESTING!
         public int Unknown095;
 
         // Index: 96 Hex: 0x180
@@ -547,7 +552,7 @@ namespace UCP.AICharacters
 
         // Index: 157 Hex: 0x274
         [RWNames("Unknown157")]
-        [RWComment("Units that engage enemy groups of units outside the castle. Prioritizes larger groups no matter where they are on the map.")]
+        [RWComment("Units that engage enemy groups of units outside the castle. Prioritizes larger groups no matter where they are on the map. Otherwise destroys buildings outside the castle.")]
         public Unit AttUnitEngage;
 
         // Index: 158 Hex: 0x278
@@ -565,18 +570,19 @@ namespace UCP.AICharacters
         public int Unknown161;
 
         // Index: 162 Hex: 0x288
-        [RWComment("The units the AI recruits as main part of the strike force")]
+        [RWComment("AttUntiMain1 to AttUnitMain4 is a lsit of the main strike force the AI recruits for sieges. Priotizes in order of the list, but only recruits untis for which they have enough gold. So try to place expensive units higher up.")]
         public Unit AttUnitMain1;
 
         // Index: 163 Hex: 0x28C
-        [RWComment("The units the AI recruits as secondary part of the strike force")]
         public Unit AttUnitMain2;
 
         // Index: 164 Hex: 0x290
-        public int Unknown164;
+        [RWNames("Unknown164")]
+        public Unit AttUnitMain3;
 
         // Index: 165 Hex: 0x294
-        public int Unknown165;
+        [RWNames("Unknown165")]
+        public Unit AttUnitMain4;
 
         // Index: 166 Hex: 0x298
         [RWComment("This does nothing")]
