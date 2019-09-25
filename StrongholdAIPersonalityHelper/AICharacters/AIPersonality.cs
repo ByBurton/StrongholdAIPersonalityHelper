@@ -14,12 +14,23 @@ namespace UCP.AICharacters
         public void SetByIndex(int index, int value)
         {
             FieldInfo fi = fieldInfos[index];
-            fi.SetValue(this, value);
+            if (fi.FieldType == typeof(bool))
+            {
+                fi.SetValue(this, value != 0);
+            }
+            else
+            {
+                fi.SetValue(this, value);
+            }
         }
 
         public int GetByIndex(int index)
         {
             FieldInfo fi = fieldInfos[index];
+            if (fi.FieldType == typeof(bool))
+            {
+                return (bool)fi.GetValue(this) ? 1 : 0;
+            }
             return (int)fi.GetValue(this);
         }
 
@@ -54,10 +65,14 @@ namespace UCP.AICharacters
         public int HighestPopularity;
 
         // Index: 9 Hex: 0x24
-        public int Unknown009;
+        [RWNames("Unknown009")]
+        [RWComment("Ranging from 0 (being +7 gifts) to 11 (being -24 taxes)")]
+        public int TaxesMin;
 
         // Index: 10 Hex: 0x28
-        public int Unknown010;
+        [RWNames("Unknown010")]
+        [RWComment("Ranging from 0 (being +7 gifts) to 11 (being -24 taxes)")]
+        public int TaxesMax;
 
         // Index: 11 Hex: 0x2C
         public int Unknown011;
@@ -104,19 +119,24 @@ namespace UCP.AICharacters
         public int PopulationPerPitchrig;
 
         // Index: 25 Hex: 0x64
+        [RWComment("Setting this to zero will not disable building! Set PopulationPerQuarry to zero instead!")]
         public int MaxQuarries;
 
         // Index: 26 Hex: 0x68
+        [RWComment("Setting this to zero will not disable building! Set PopulationPerIronmine to zero instead!")]
         public int MaxIronmines;
 
         // Index: 27 Hex: 0x6C
+        [RWComment("Setting this to zero will not disable building! Set PopulationPerWoodcutter to zero instead!")]
         public int MaxWoodcutters;
 
         // Index: 28 Hex: 0x70
+        [RWComment("Setting this to zero will not disable building! Set PopulationPerPitchrig to zero instead!")]
         public int MaxPitchrigs;
 
         // Index: 29 Hex: 0x74
-        [RWComment("The maximum amount of farms the AI builds. (Also check PopulationPerFarm)")]
+        //[RWComment("The maximum amount of farms the AI builds. HopFarms are excluded from this! (Also check PopulationPerFarm)")]
+        [RWComment("Setting this to zero will not disable building! Set PopulationPerFarm to zero instead!")]
         public int MaxFarms;
 
         // Index: 30 Hex: 0x78
@@ -128,23 +148,26 @@ namespace UCP.AICharacters
         public int ResourceRebuildDelay;
 
         // Index: 32 Hex: 0x80
-        [RWComment("includes flour?")]
+        [RWComment("Includes wheat. Applies to each kind of food.")]
         public int MaxFood;
 
         // Index: 33 Hex: 0x84
+        [RWComment("Reserves that are only consumed if current popularity < LowestPopularity. If the AI has less than this amount it will prioritize buying the missing food.")]
         public int MinimumApples;
 
         // Index: 34 Hex: 0x88
+        [RWComment("Reserves that are only consumed if current popularity < LowestPopularity. If the AI has less than this amount it will prioritize buying the missing food.")]
         public int MinimumCheese;
 
         // Index: 35 Hex: 0x8C
+        [RWComment("Reserves that are only consumed if current popularity < LowestPopularity. If the AI has less than this amount it will prioritize buying the missing food.")]
         public int MinimumBread;
 
         // Index: 36 Hex: 0x90
         public int MinimumWheat;
 
         // Index: 37 Hex: 0x94
-        [RWComment("unclear")]
+        [RWComment("Unclear")]
         public int MinimumHop;
 
         // Index: 38 Hex: 0x98
@@ -157,10 +180,14 @@ namespace UCP.AICharacters
         public int Unknown040;
 
         // Index: 41 Hex: 0xA4
-        public int Unknown041;
+        [RWNames("Unknown041")]
+        [RWComment("If the AI would have less than this amount of a good after sending them it won't send them to the requesting player.")] //Includes ResourceVariance?
+        public int MinimumGoodsRequiredAfterTrade;
 
         // Index: 42 Hex: 0xA8
-        public int Unknown042;
+        [RWNames("Unknown042")]
+        [RWComment("Above this value of food the AI will give double rations out.")]
+        public int DoubleRationsFoodThreshold;
 
         // Index: 43 Hex: 0xAC
         public int MaxWood;
@@ -172,6 +199,7 @@ namespace UCP.AICharacters
         public int MaxResourceOther;
 
         // Index: 46 Hex: 0xB8
+        [RWComment("Applies to each type of weapon or armour.")]
         public int MaxEquipment;
 
         // Index: 47 Hex: 0xBC
@@ -184,7 +212,7 @@ namespace UCP.AICharacters
         // Index: 49 Hex: 0xC4
         [RWNames("Unknown049")]
         [RWComment("A (gold) threshold which disables any recruitment of all units except for raiding and sortie until it is met.")]
-        public int AttForceRecruitThreshold;
+        public int RecruitGoldThreshold;
 
         // Index: 50 Hex: 0xC8
         public BlacksmithSetting BlacksmithSetting;
@@ -241,10 +269,13 @@ namespace UCP.AICharacters
         public Resource SellResource15;
 
         // Index: 68 Hex: 0x110
-        public int Unknown068;
+        [RWNames("Unknown068")]
+        [RWComment("The amount of time for castle patrols set up in the AIV to move from one rally point to the next. (Remark: Only spearmen, horse archers and macemen currently do)")]
+        public int DefWallPatrolRallyTime;
 
         // Index: 69 Hex: 0x114
-        public int Unknown069;
+        [RWNames("Unknown069")]
+        public int DefWallPatrolGroups;
 
         // Index: 70 Hex: 0x118
         [RWComment("This one makes no sense. In code: [if (Gold + Threshold > 30) then RecruitEngineer()], maybe it was supposed to be minus...")]
@@ -263,7 +294,7 @@ namespace UCP.AICharacters
         public int Unknown073;
 
         // Index: 74 Hex: 0x128
-        [RWComment("The probability with which this AI reinforces missing defense troops.")]
+        [RWComment("The probability with which this AI reinforces missing defense troops. Note: These are ignored at the beginning of the game, as there are only sortie and defensive units being recruited.")]
         public int RecruitProbDefDefault;
 
         // Index: 75 Hex: 0x12C
@@ -291,17 +322,21 @@ namespace UCP.AICharacters
         public int RecruitProbAttackStrong;
 
         // Index: 83 Hex: 0x14C
-        public int SortieUnitRangedMax;
+        [RWComment("These units are only sent out if more than this amout of them has already been recruited.")]
+        [RWNames("SortieUnitRangedMax", "Unknown083")]
+        public int SortieUnitRangedMin;
 
         // Index: 84 Hex: 0x150
-        [RWComment("Type of ranged units that go to the last attacked farm or building, and guard it until another is attacked.")]
+        [RWComment("Type of ranged units that go to the last attacked farm or building, and guard it until another is attacked. Setting it to None may cause buggy recruitment behavior.")]
         public Unit SortieUnitRanged;
 
         // Index: 85 Hex: 0x154
-        public int SortieUnitMeleeMax;
+        [RWNames("SortieUnitMeleeMax", "Unknown085")]
+        [RWComment("These units are only sent out if more than this amout of them has already been recruited.")]
+        public int SortieUnitMeleeMin;
 
         // Index: 86 Hex: 0x158
-        [RWComment("Type of melee units to attack enemy units shooting at the AI's buildings or workers.")]
+        [RWComment("Type of melee units to attack enemy units shooting at the AI's buildings or workers. Setting it to None may cause buggy recruitment behavior.")]
         public Unit SortieUnitMelee;
 
         // Index: 87 Hex: 0x15C
@@ -330,19 +365,19 @@ namespace UCP.AICharacters
 
         // Index: 93 Hex: 0x174
         [RWNames("Unknown093")]
-        [RWComment("The # of groups the patrols defending the outer economy split into.")]
+        [RWComment("The number of groups the patrols defending the outer economy split into.")]
         public int OuterPatrolGroupsCount;
 
         // Index: 94 Hex: 0x178
         [RWNames("Unknown094")]
-        [RWComment("Should be 0 or 1. 0 means they will be dumped to one place (quarry), while 1 makes the AI move them around.")]
-        public int OuterPatrolGroupsMove;
+        [RWComment("Whether the patrols stay at one place (quarry) or move around.")]
+        public bool OuterPatrolGroupsMove;
 
         // Index: 95 Hex: 0x17C
-        //[RWNames("Unknown095")]
+        [RWNames("Unknown095")]
         //[RWComment("The amount of patrol units the AI saves up before sending them out to do their duty.")]
-        //NOT SURE HERE YET, NEEDS TESTING!
-        public int Unknown095;
+        [RWComment("The delay after which the AI sends out patrols to defend the outer economy. 4 is approximately one month, 24 being half a year.")]
+        public int OuterPatrolRallyDelay;
 
         // Index: 96 Hex: 0x180
         public int DefWalls;
@@ -436,7 +471,7 @@ namespace UCP.AICharacters
         public HarassingSiegeEngine HarassingSiegeEngine8;
 
         // Index: 123 Hex: 0x1EC
-        [RWNames("Unknown123")]
+        [RWNames("Unknown123", "RaidCatapultsMax")]
         [RWComment("The maximum of harassing siege engines an AI builds.")]
         public int HarassingSiegeEnginesMax;
 
@@ -452,18 +487,28 @@ namespace UCP.AICharacters
         public int AttForceRandom;
 
         // Index: 127 Hex: 0x1FC
-        public int Unknown127;
+        [RWNames("Unknown127", "AttForceRallyDistanceRandom")]
+        [RWComment("If the AI has more than this amount of units in the attack force, it will help their allies or siege an enemy if commanded to do so.")]
+        public int AttForceSupportAllyThreshold;
 
         // Index: 128 Hex: 0x200
-        public int Unknown128;
+        [RWComment("The %-amount of units of the attack force that the AI will rally before attacking. (0 - 100)")]
+        [RWNames("Unknown128")]
+        public int AttForceRallyPercentage;
 
         // Index: 129 Hex: 0x204
         public int Unknown129;
 
         // Index: 130 Hex: 0x208
+        //[RWComment("The %-amount of (siege engines? engineers? laddermen? tunnelers? siege def?) that need to be destroyed / killed before the main units attack.")]
+        [RWNames("Unknown130", "AttForceCasualtiesPercentageBeforeAssault")]
+        //public int AttForceCasualtiesPercentageBeforeAssault;
         public int Unknown130;
 
         // Index: 131 Hex: 0x20C
+        //Maybe a delay instead of a percentage
+        //[RWComment("The %-amount of units of the attack force that will rally (at the bested enemy's keep location) before retreating.")]
+        [RWNames("Unknown131", "AttForceSuccessRallyPercentage")]
         public int Unknown131;
 
         // Index: 132 Hex: 0x210
@@ -494,7 +539,10 @@ namespace UCP.AICharacters
         public SiegeEngine SiegeEngine8;
 
         // Index: 141 Hex: 0x234
-        public int Unknown141;
+        //Maybe the amount of stones thrown by all catapults until a cow is thrown instead
+        [RWNames("Unknown141")]
+        [RWComment("The amount of stones needed to be thrown until the AI throws a diseased cow instead (catapults & trebuchets). Value 0 disables cows and -1 makes the AI not throw any bolders, only cows.")]
+        public int CowThrowInterval;
 
         // Index: 142 Hex: 0x238
         public int Unknown142;
@@ -503,16 +551,19 @@ namespace UCP.AICharacters
         public int AttMaxEngineers;
 
         // Index: 144 Hex: 0x240
-        [RWComment("This unit is only recruited if the target enemy has moat and used preferably to dig enemy moat.")]
+        [RWComment("This unit is only recruited if the target enemy has moat and used preferably to fill up enemy moat.")]
         public DiggingUnit AttDiggingUnit;
 
         // Index: 145 Hex: 0x244
         public int AttDiggingUnitMax;
 
         // Index: 146 Hex: 0x248
+        [RWNames("Unknown146")]
+        //Not without improved attack waves: [RWComment("These units split from the main attack force to destroy enemy buildings. If the enemy walls are nearby those may be attacked.")]
         public Unit AttUnit2;
 
         // Index: 147 Hex: 0x24C
+        [RWNames("Unknown147")]
         public int AttUnit2Max;
 
         // Index: 148 Hex: 0x250
@@ -525,16 +576,16 @@ namespace UCP.AICharacters
         public int AttMaxTunnelers;
 
         // Index: 151 Hex: 0x25C
-        [RWNames("Unknown151")]
+        [RWNames("Unknown151", "AttUnitRangedPush")]
         [RWComment("Ranged attack unit that patrols around the enemy castle / keep. Preferably ranged units should be used here.")]
         public Unit AttUnitPatrol;
 
         // Index: 152 Hex: 0x260
-        [RWNames("Unknown152")]
+        [RWNames("Unknown152", "AttUnitRangedPushMax")]
         public int AttUnitPatrolMax;
 
         // Index: 153 Hex: 0x264
-        [RWNames("Unknown153")]
+        [RWNames("Unknown153", "RangedPushGroupsCount")]
         [RWComment("# of groups the AttUnitPatrol split into. BUGGY! More than 1 group results to only a single group attacking, the others standing idle.")]
         public int AttUnitPatrolGroupsCount;
 
@@ -551,26 +602,27 @@ namespace UCP.AICharacters
         public int RangedBackupGroupsCount;
 
         // Index: 157 Hex: 0x274
-        [RWNames("Unknown157")]
+        [RWNames("Unknown157", "AttUnit5")]
         [RWComment("Units that engage enemy groups of units outside the castle. Prioritizes larger groups no matter where they are on the map. Otherwise destroys buildings outside the castle.")]
         public Unit AttUnitEngage;
 
         // Index: 158 Hex: 0x278
-        [RWNames("Unknown158")]
+        [RWNames("Unknown158", "AttUnit5Max")]
         public int AttUnitEngageMax;
 
         // Index: 159 Hex: 0x27C
-        [RWComment("These units patrol between siege enginees in order to protect them.")]
+        [RWComment("These units patrol between siege engines in order to protect them.")]
         public Unit AttUnitSiegeDef;
 
         // Index: 160 Hex: 0x280
         public int AttUnitSiegeDefMax;
 
         // Index: 161 Hex: 0x284
-        public int Unknown161;
+        [RWNames("Unknown161")]
+        public int AttUnitSiegeDefGroupsCount;
 
         // Index: 162 Hex: 0x288
-        [RWComment("AttUntiMain1 to AttUnitMain4 is a lsit of the main strike force the AI recruits for sieges. Priotizes in order of the list, but only recruits untis for which they have enough gold. So try to place expensive units higher up.")]
+        [RWComment("AttUntiMain1 to AttUnitMain4 is a list of the main strike force the AI recruits for sieges. Priotizes in order of the list, but only recruits units for which they have enough gold. So try to place expensive units higher up.")]
         public Unit AttUnitMain1;
 
         // Index: 163 Hex: 0x28C
@@ -589,7 +641,9 @@ namespace UCP.AICharacters
         public int AttMaxDefault;
 
         // Index: 167 Hex: 0x29C
-        public int Unknown167;
+        [RWComment("# of groups all the AttUnitMain split into. Maximum is 3")]
+        [RWNames("Unknown167")]
+        public int AttMainGroupsCount;
 
         // Index: 168 Hex: 0x2A0
         public TargetingType TargetChoice;
