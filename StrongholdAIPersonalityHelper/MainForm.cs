@@ -109,6 +109,7 @@ namespace SAIPH
 
         private void BtnPath_Click(object sender, EventArgs e)
         {
+            openFileDialog.DefaultExt = ".aic";
             openFileDialog.ShowDialog();
             path = openFileDialog.FileName;
 
